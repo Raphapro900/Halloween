@@ -28,7 +28,15 @@
         }
 
         h1 {
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
             font-size: 2.8rem;
+            margin-bottom: 10px;
+            color: #ff6b35;
+        }
+
+        .subtitulo {
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+            font-size: 1.8rem;
             margin-bottom: 40px;
             color: #ff6b35;
         }
@@ -125,6 +133,7 @@
 <body>
     <div class="container" id="pregunta">
         <h1>Dulces en Halloween</h1>
+        <p class="subtitulo">empezar?</p>
         <div class="buttons">
             <button id="si">SÍ</button>
             <button id="no">NO</button>
@@ -224,11 +233,9 @@
                 video.style.display = 'none';
                 mensaje.style.display = 'flex';
 
-                // 30 segundos → "porque no te sales?"
                 setTimeout(() => {
                     document.getElementById('porque').classList.add('show');
 
-                    // 15 segundos después → segundo jumpscare
                     setTimeout(() => {
                         mensaje.style.display = 'none';
                         video.style.display = 'block';
@@ -244,7 +251,6 @@
                             });
                         }
 
-                        // 3 segundos después → intentar cerrar ventana
                         setTimeout(() => {
                             window.close();
                         }, 3000);
