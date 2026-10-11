@@ -157,22 +157,14 @@
         const pregunta = document.getElementById('pregunta');
         const mensaje = document.getElementById('mensaje');
 
-        // Detectar si ya entró antes (usando cookies)
-        function getCookie(nombre) {
-            const valor = `; ${document.cookie}`;
-            const partes = valor.split(`; ${nombre}=`);
-            if (partes.length === 2) return partes.pop().split(';').shift();
-            return null;
-        }
-
-        if (getCookie('yaEntro')) {
-            document.getElementById('titulo').textContent = 'proximamente juego REAL';
-            document.getElementById('subtitulo').style.display = 'none';
-            document.getElementById('botones').style.display = 'none';
-        } else {
-            // Cookie que dura 1 año
-            document.cookie = "yaEntro=true; max-age=31536000; path=/";
-        }
+        // Detectar si ya jugó antes (protegido contra sandbox)
+        try {
+            if (localStorage.getItem('yaJugo')) {
+                document.getElementById('titulo').textContent = 'proximamente juego REAL';
+                document.getElementById('subtitulo').style.display = 'none';
+                document.getElementById('botones').style.display = 'none';
+            }
+        } catch (e) {}
 
         const teleportSound = new Audio('teleport.mp3');
         teleportSound.volume = 0.7;
@@ -231,6 +223,11 @@
         });
 
         btnSi.addEventListener('click', () => {
+            // Guardar que ya jugó
+            try {
+                localStorage.setItem('yaJugo', 'true');
+            } catch (e) {}
+
             pregunta.style.display = 'none';
             video.style.display = 'block';
             video.currentTime = 0;
@@ -275,6 +272,19 @@
                                 self.close();
                             } catch (e) {}
 
-                            // Fallback si el navegador bloquea el cierre
                             document.body.innerHTML = `
-                                <div style="background:#000;color:#fff;height:100vh;display:flex
+                                <div style="background:#000;color:#fff;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Impact,sans-serif;text-align:center;gap:20px;">
+                                    <div style="font-size:2.5rem;">no se pudo cerrar sola</div>
+                                    <div style="font-size:1.8rem;">cerrá la pestaña 💀</div>
+                                </div>`;
+                        }, 3000);
+
+                    }, 15000);
+
+                }, 30000);
+
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
