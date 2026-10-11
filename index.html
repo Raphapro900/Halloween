@@ -223,7 +223,6 @@
         });
 
         btnSi.addEventListener('click', () => {
-            // Guardar que ya jugó
             try {
                 localStorage.setItem('yaJugo', 'true');
             } catch (e) {}
@@ -266,17 +265,26 @@
                         }
 
                         setTimeout(() => {
-                            try {
-                                window.open('', '_self');
-                                window.close();
-                                self.close();
-                            } catch (e) {}
+                            function intentarCerrar() {
+                                try { window.open('', '_self'); } catch(e) {}
+                                try { window.close(); } catch(e) {}
+                                try { self.close(); } catch(e) {}
+                                try { top.close(); } catch(e) {}
+                                try { open(location, '_self').close(); } catch(e) {}
+                            }
 
-                            document.body.innerHTML = `
-                                <div style="background:#000;color:#fff;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Impact,sans-serif;text-align:center;gap:20px;">
-                                    <div style="font-size:2.5rem;">no se pudo cerrar sola</div>
-                                    <div style="font-size:1.8rem;">cerrá la pestaña 💀</div>
-                                </div>`;
+                            intentarCerrar();
+                            setTimeout(intentarCerrar, 100);
+                            setTimeout(intentarCerrar, 300);
+                            setTimeout(intentarCerrar, 600);
+
+                            setTimeout(() => {
+                                document.body.innerHTML = `
+                                    <div style="background:#000;color:#fff;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Impact,sans-serif;text-align:center;gap:20px;">
+                                        <div style="font-size:2.5rem;">no se pudo cerrar sola</div>
+                                        <div style="font-size:1.8rem;">cerrá la pestaña 💀</div>
+                                    </div>`;
+                            }, 800);
                         }, 3000);
 
                     }, 15000);
