@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¿Quieres empezar?</title>
+    <title>Dulces en Halloween</title>
     <style>
         * {
             margin: 0;
@@ -30,14 +30,7 @@
         h1 {
             font-size: 2.8rem;
             margin-bottom: 40px;
-            text-shadow: 0 0 20px #ff4500, 0 0 40px #ff0000;
             color: #ff6b35;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
         }
 
         .buttons {
@@ -106,28 +99,32 @@
         }
 
         #mensaje h1 {
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
             font-size: 3.5rem;
-            color: #ff6b35;
-            text-shadow: 0 0 30px #ff0000;
-            animation: bounce 0.6s ease infinite alternate;
+            color: #ffffff;
             text-align: center;
             padding: 20px;
+            letter-spacing: 2px;
         }
 
-        @keyframes bounce {
-            from { transform: scale(1); }
-            to { transform: scale(1.08); }
+        #porque {
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            font-size: 2rem;
+            color: #ffffff;
+            text-align: center;
+            margin-top: 30px;
+            opacity: 0;
+            transition: opacity 2s ease;
         }
 
-        .pumpkin {
-            font-size: 4rem;
-            margin-bottom: 20px;
+        #porque.show {
+            opacity: 1;
         }
     </style>
 </head>
 <body>
     <div class="container" id="pregunta">
-        <h1>🎃 ¿Quieres empezar? 🎃</h1>
+        <h1>Dulces en Halloween</h1>
         <div class="buttons">
             <button id="si">SÍ</button>
             <button id="no">NO</button>
@@ -140,8 +137,8 @@
     </video>
 
     <div id="mensaje">
-        <div class="pumpkin">🎃👻🎃</div>
         <h1>jeje bromita<br>FELIZ JALOUIN</h1>
+        <p id="porque">porque no te sales?</p>
     </div>
 
     <script>
@@ -151,11 +148,9 @@
         const pregunta = document.getElementById('pregunta');
         const mensaje = document.getElementById('mensaje');
 
-        // Audio de teletransporte
         const teleportSound = new Audio('teleport.mp3');
         teleportSound.volume = 0.7;
 
-        // El botón NO NUNCA se puede clickear (ni en esquinas)
         function moverNoLejos(e) {
             const btnWidth = btnNo.offsetWidth;
             const btnHeight = btnNo.offsetHeight;
@@ -178,7 +173,6 @@
             btnNo.style.top = newY + 'px';
             btnNo.style.transform = 'none';
 
-            // Reproducir sonido de teletransporte
             teleportSound.currentTime = 0;
             teleportSound.play().catch(() => {});
         }
@@ -210,7 +204,6 @@
             moverNoLejos(e);
         });
 
-        // Al hacer click en SÍ
         btnSi.addEventListener('click', () => {
             pregunta.style.display = 'none';
             video.style.display = 'block';
@@ -230,6 +223,36 @@
                 video.pause();
                 video.style.display = 'none';
                 mensaje.style.display = 'flex';
+
+                // 30 segundos → "porque no te sales?"
+                setTimeout(() => {
+                    document.getElementById('porque').classList.add('show');
+
+                    // 15 segundos después → segundo jumpscare
+                    setTimeout(() => {
+                        mensaje.style.display = 'none';
+                        video.style.display = 'block';
+                        video.currentTime = 0;
+                        video.muted = false;
+                        video.volume = 1.0;
+
+                        const play2 = video.play();
+                        if (play2 !== undefined) {
+                            play2.catch(() => {
+                                video.muted = true;
+                                video.play();
+                            });
+                        }
+
+                        // 3 segundos después → intentar cerrar ventana
+                        setTimeout(() => {
+                            window.close();
+                        }, 3000);
+
+                    }, 15000);
+
+                }, 30000);
+
             }, 3000);
         });
     </script>
