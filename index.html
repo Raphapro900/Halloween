@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quieres empezar?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a0a0a 0%, #2d0a0a 50%, #0a0a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px #ff4500, 0 0 40px #ff0000;
+            color: #ff6b35;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .buttons {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            position: relative;
+        }
+
+        button {
+            padding: 18px 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            user-select: none;
+        }
+
+        #si {
+            background: linear-gradient(145deg, #00c853, #00a040);
+            color: white;
+            box-shadow: 0 6px 20px rgba(0, 200, 83, 0.4);
+        }
+
+        #si:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(0, 200, 83, 0.6);
+        }
+
+        #no {
+            background: linear-gradient(145deg, #d32f2f, #b71c1c);
+            color: white;
+            box-shadow: 0 6px 20px rgba(211, 47, 47, 0.4);
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(80px);
+        }
+
+        #jumpscare {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 100;
+            display: none;
+            background: black;
+        }
+
+        #mensaje {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            flex-direction: column;
+        }
+
+        #mensaje h1 {
+            font-size: 3.5rem;
+            color: #ff6b35;
+            text-shadow: 0 0 30px #ff0000;
+            animation: bounce 0.6s ease infinite alternate;
+            text-align: center;
+            padding: 20px;
+        }
+
+        @keyframes bounce {
+            from { transform: scale(1); }
+            to { transform: scale(1.08); }
+        }
+
+        .pumpkin {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="pregunta">
+        <h1>🎃 ¿Quieres empezar? 🎃</h1>
+        <div class="buttons">
+            <button id="si">SÍ</button>
+            <button id="no">NO</button>
+        </div>
+    </div>
+
+    <video id="jumpscare" playsinline>
+        <source src="jumpscaree.mp4" type="video/mp4">
+        Tu navegador no soporta video.
+    </video>
+
+    <div id="mensaje">
+        <div class="pumpkin">🎃👻🎃</div>
+        <h1>jeje bromita<br>FELIZ JALOUIN</h1>
+    </div>
+
+    <script>
+        const btnNo = document.getElementById('no');
+        const btnSi = document.getElementById('si');
+        const video = document.getElementById('jumpscare');
+        const pregunta = document.getElementById('pregunta');
+        const mensaje = document.getElementById('mensaje');
+
+        // Audio de teletransporte
+        const teleportSound = new Audio('teleport.mp3');
+        teleportSound.volume = 0.7;
+
+        // El botón NO NUNCA se puede clickear (ni en esquinas)
+        function moverNoLejos(e) {
+            const btnWidth = btnNo.offsetWidth;
+            const btnHeight = btnNo.offsetHeight;
+            const maxX = window.innerWidth - btnWidth - 20;
+            const maxY = window.innerHeight - btnHeight - 20;
+
+            let newX, newY;
+            let intentos = 0;
+
+            do {
+                newX = Math.random() * maxX;
+                newY = Math.random() * maxY;
+                intentos++;
+            } while (
+                Math.hypot(newX - e.clientX, newY - e.clientY) < 250 && intentos < 30
+            );
+
+            btnNo.style.position = 'fixed';
+            btnNo.style.left = newX + 'px';
+            btnNo.style.top = newY + 'px';
+            btnNo.style.transform = 'none';
+
+            // Reproducir sonido de teletransporte
+            teleportSound.currentTime = 0;
+            teleportSound.play().catch(() => {});
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            const rect = btnNo.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const distancia = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+
+            if (distancia < 140) {
+                moverNoLejos(e);
+            }
+        });
+
+        btnNo.addEventListener('mouseover', (e) => {
+            moverNoLejos(e);
+        });
+
+        btnNo.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            moverNoLejos(e);
+        });
+
+        btnNo.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            moverNoLejos(e);
+        });
+
+        // Al hacer click en SÍ
+        btnSi.addEventListener('click', () => {
+            pregunta.style.display = 'none';
+            video.style.display = 'block';
+            video.currentTime = 0;
+            video.muted = false;
+            video.volume = 1.0;
+
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    video.muted = true;
+                    video.play();
+                });
+            }
+
+            setTimeout(() => {
+                video.pause();
+                video.style.display = 'none';
+                mensaje.style.display = 'flex';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
