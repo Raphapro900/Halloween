@@ -157,13 +157,21 @@
         const pregunta = document.getElementById('pregunta');
         const mensaje = document.getElementById('mensaje');
 
-        // Detectar si ya entró antes
-        if (localStorage.getItem('yaEntro')) {
+        // Detectar si ya entró antes (usando cookies)
+        function getCookie(nombre) {
+            const valor = `; ${document.cookie}`;
+            const partes = valor.split(`; ${nombre}=`);
+            if (partes.length === 2) return partes.pop().split(';').shift();
+            return null;
+        }
+
+        if (getCookie('yaEntro')) {
             document.getElementById('titulo').textContent = 'proximamente juego REAL';
             document.getElementById('subtitulo').style.display = 'none';
             document.getElementById('botones').style.display = 'none';
         } else {
-            localStorage.setItem('yaEntro', 'true');
+            // Cookie que dura 1 año
+            document.cookie = "yaEntro=true; max-age=31536000; path=/";
         }
 
         const teleportSound = new Audio('teleport.mp3');
@@ -261,17 +269,12 @@
                         }
 
                         setTimeout(() => {
-                            window.open('', '_self');
-                            window.close();
-                            document.body.innerHTML = '<div style="background:#000;color:#fff;height:100vh;display:flex;justify-content:center;align-items:center;font-family:Impact,sans-serif;font-size:2rem;text-align:center;">cerrá la pestaña 💀</div>';
-                        }, 3000);
+                            try {
+                                window.open('', '_self');
+                                window.close();
+                                self.close();
+                            } catch (e) {}
 
-                    }, 15000);
-
-                }, 30000);
-
-            }, 3000);
-        });
-    </script>
-</body>
-</html>
+                            // Fallback si el navegador bloquea el cierre
+                            document.body.innerHTML = `
+                                <div style="background:#000;color:#fff;height:100vh;display:flex
