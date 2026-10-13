@@ -132,9 +132,9 @@
 </head>
 <body>
     <div class="container" id="pregunta">
-        <h1 id="titulo">Dulces en Halloween</h1>
-        <p class="subtitulo" id="subtitulo">empezar?</p>
-        <div class="buttons" id="botones">
+        <h1>Dulces en Halloween</h1>
+        <p class="subtitulo">empezar?</p>
+        <div class="buttons">
             <button id="si">SÍ</button>
             <button id="no">NO</button>
         </div>
@@ -156,15 +156,6 @@
         const video = document.getElementById('jumpscare');
         const pregunta = document.getElementById('pregunta');
         const mensaje = document.getElementById('mensaje');
-
-        // Detectar si ya jugó antes (protegido contra sandbox)
-        try {
-            if (localStorage.getItem('yaJugo')) {
-                document.getElementById('titulo').textContent = 'proximamente juego REAL';
-                document.getElementById('subtitulo').style.display = 'none';
-                document.getElementById('botones').style.display = 'none';
-            }
-        } catch (e) {}
 
         const teleportSound = new Audio('teleport.mp3');
         teleportSound.volume = 0.7;
@@ -223,10 +214,6 @@
         });
 
         btnSi.addEventListener('click', () => {
-            try {
-                localStorage.setItem('yaJugo', 'true');
-            } catch (e) {}
-
             pregunta.style.display = 'none';
             video.style.display = 'block';
             video.currentTime = 0;
